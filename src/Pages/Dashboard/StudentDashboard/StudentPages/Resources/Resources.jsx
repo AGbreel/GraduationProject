@@ -1,10 +1,13 @@
 import React from 'react'
 import style from './Resources.module.css'
+import Header from '../../../../../Components/Header/Header'
 
 export default function Resources() {
   return (
     <>
-      <h2> Welcome to Resources </h2>
+      <div className="p-6 space-y-6">
+        <Header title="Resources" subTitle="Access course resources" />
+      </div>
     </>
   )
 }

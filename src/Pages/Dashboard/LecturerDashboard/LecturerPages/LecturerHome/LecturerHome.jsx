@@ -2,6 +2,8 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, 
 import { ScrollText, CalendarDays } from "lucide-react";
 import { Card, CardContent, CardHeader } from '@mui/material';
 import { AddCircleOutlineOutlined, AssignmentTurnedInOutlined, PlayArrowOutlined, SchoolOutlined } from '@mui/icons-material';
+import { db } from '../../../../../firebase';
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const data = [
   { name: "Web Dev", attendance: 95 },
@@ -44,11 +46,24 @@ const students = [
 ];
 
 
+const handleStartClass = async () => {
+  try {
+    const docRef = await addDoc(collection(db, "classrooms"), {
+      name: `Class ${new Date().toLocaleTimeString()}`,
+      createdAt: serverTimestamp(),
+    });
+    console.log("Classroom Created with ID: ", docRef.id);
+  } catch (error) {
+    console.error("Error creating classroom: ", error);
+  }
+};
+
+
 const Home = () => {
   return (
     <div className="p-6 space-y-6">
       <div className="grid grid-cols-4 gap-4">
-        <Card sx={{ bgcolor: "#fff" }} className="p-4 flex items-center gap-3">
+        <Card onClick={handleStartClass} sx={{ bgcolor: "#fff" }} className="p-4 flex items-center gap-3">
           <PlayArrowOutlined fontSize='large' sx={{ color: "#4b5e4b" }} />
           <div>
             <p className='font-semibold text-sm text-[#4b5e4b]'>Start a Class</p>

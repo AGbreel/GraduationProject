@@ -1,7 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 //! Admin Import
-import AdminProtectedRoute from './Pages/Dashboard/AdminDashboard/AdminComponents/AdminProtectedRoute/AdminProtectedRoute'
-import AdminLayout from './Pages/Dashboard/AdminDashboard/AdminComponents/AdminLayout/AdminLayout'
 import AdminHome from './Pages/Dashboard/AdminDashboard/AdminPages/AdminHome/AdminHome'
 import AdminProfile from './Pages/Dashboard/AdminDashboard/AdminPages/AdminProfile/AdminProfile'
 import AdminSystem from './Pages/Dashboard/AdminDashboard/AdminPages/AdminSystem/AdminSystem'
@@ -17,8 +15,6 @@ import AdminAnnounce from './Pages/Dashboard/AdminDashboard/AdminPages/AdminAnno
 import AdminSettings from './Pages/Dashboard/AdminDashboard/AdminPages/AdminSettings/AdminSettings'
 
 //! Lecturer Import
-import LecturerProtectedRoute from './Pages/Dashboard/LecturerDashboard/LecturerComponents/LecturerProtectedRoute/LecturerProtectedRoute'
-import LecturerLayout from './Pages/Dashboard/LecturerDashboard/LecturerComponents/LecturerLayout/LecturerLayout'
 import LecturerHome from './Pages/Dashboard/LecturerDashboard/LecturerPages/LecturerHome/LecturerHome'
 import LecturerProfile from './Pages/Dashboard/LecturerDashboard/LecturerPages/LecturerProfile/LecturerProfile'
 import LecturerTimeTable from './Pages/Dashboard/LecturerDashboard/LecturerPages/LecturerTimeTable/LecturerTimeTable'
@@ -30,8 +26,6 @@ import LecturerAnalysis from './Pages/Dashboard/LecturerDashboard/LecturerPages/
 import LecturerChat from './Pages/Dashboard/LecturerDashboard/LecturerPages/LecturerChat/LecturerChat'
 
 //! Student Import 
-import StudentProtectedRoute from './Pages/Dashboard/StudentDashboard/StudentComponents/StudentProtectedRoute/StudentProtectedRoute'
-import StudentLayout from './Pages/Dashboard/StudentDashboard/StudentComponents/StudentLayout/StudentLayout'
 import Home from './Pages/Dashboard/StudentDashboard/StudentPages/Home/Home'
 import Profile from './Pages/Dashboard/StudentDashboard/StudentPages/Profile/Profile'
 import Calender from './Pages/Dashboard/StudentDashboard/StudentPages/Calender/Calender'
@@ -40,7 +34,7 @@ import Resources from './Pages/Dashboard/StudentDashboard/StudentPages/Resources
 import Classrooms from './Pages/Dashboard/StudentDashboard/StudentPages/Classrooms/Classrooms'
 import Assignments from './Pages/Dashboard/StudentDashboard/StudentPages/Assignments/Assignments'
 import Exams from './Pages/Dashboard/StudentDashboard/StudentPages/Exams/Exams'
-import Chat from './Pages/Dashboard/StudentDashboard/StudentPages/Chat/Chat'
+import Chat from './Components/Chat/Chat'
 import FAQ from './Pages/Dashboard/StudentDashboard/StudentPages/FAQ/FAQ'
 import Help from './Pages/Dashboard/StudentDashboard/StudentPages/Help/Help'
 
@@ -53,37 +47,41 @@ import { useState } from 'react'
 import LandingPage from './Components/LandingPage/LandingPage'
 import LecturerCoursesDetails from './Pages/Dashboard/LecturerDashboard/LecturerPages/LecturerCoursesDetails/LecturerCoursesDetails'
 import LecturerAllCourses from './Pages/Dashboard/LecturerDashboard/LecturerPages/LecturerAllCourses/LecturerAllCourses'
+import Layout from './Components/Layout/Layout'
+import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
+import Settings from './Pages/Dashboard/StudentDashboard/StudentPages/Settings/Settings'
 
 
 
 function App() {
 
   // const [role, setRole] = useState('admin');
-  const [role, setRole] = useState('lecturer');
-  // const [role, setRole] = useState('student');
+  // const [role, setRole] = useState('lecturer');
+  const [role, setRole] = useState('student');
   
 
   //! Admin Routes
   let admin_routers = createBrowserRouter([
     {
-      path: '', element: <AdminLayout />, children: [
-        { index: true, element: <AdminProtectedRoute> <AdminHome /> </AdminProtectedRoute> },
-        { path: '/home', element: <AdminProtectedRoute> <AdminHome /> </AdminProtectedRoute> },
-        { path: '/profile', element: <AdminProtectedRoute> <AdminProfile /> </AdminProtectedRoute> },
-        { path: '/system', element: <AdminProtectedRoute> <AdminSystem /> </AdminProtectedRoute> },
-        { path: '/lecturers', element: <AdminProtectedRoute> <AdminLecturers /> </AdminProtectedRoute> },
-        { path: '/departments', element: <AdminProtectedRoute> <AdminDepartments /> </AdminProtectedRoute> },
-        { path: '/students', element: <AdminProtectedRoute> <AdminStudents /> </AdminProtectedRoute> },
-        { path: '/schedule', element: <AdminProtectedRoute> <AdminSchedule /> </AdminProtectedRoute> },
-        { path: '/courses', element: <AdminProtectedRoute> <AdminCourses /> </AdminProtectedRoute> },
-        { path: '/Attendance', element: <AdminProtectedRoute> <AdminAttendance /> </AdminProtectedRoute> },
-        { path: '/Analysis', element: <AdminProtectedRoute> <AdminAnalysis /> </AdminProtectedRoute> },
-        { path: '/Chat', element: <AdminProtectedRoute> <AdminChat /> </AdminProtectedRoute> },
-        { path: '/Announce', element: <AdminProtectedRoute> <AdminAnnounce /> </AdminProtectedRoute> },
-        { path: '/Settings', element: <AdminProtectedRoute> <AdminSettings /> </AdminProtectedRoute> },
+      path: '', element: <Layout />, children: [
+        { index: true, element: <ProtectedRoute> <AdminHome /> </ProtectedRoute> },
+        { path: '/home', element: <ProtectedRoute> <AdminHome /> </ProtectedRoute> },
+        { path: '/profile', element: <ProtectedRoute> <AdminProfile /> </ProtectedRoute> },
+        { path: '/system', element: <ProtectedRoute> <AdminSystem /> </ProtectedRoute> },
+        { path: '/lecturers', element: <ProtectedRoute> <AdminLecturers /> </ProtectedRoute> },
+        { path: '/departments', element: <ProtectedRoute> <AdminDepartments /> </ProtectedRoute> },
+        { path: '/students', element: <ProtectedRoute> <AdminStudents /> </ProtectedRoute> },
+        { path: '/schedule', element: <ProtectedRoute> <AdminSchedule /> </ProtectedRoute> },
+        { path: '/courses', element: <ProtectedRoute> <AdminCourses /> </ProtectedRoute> },
+        { path: '/attendance', element: <ProtectedRoute> <AdminAttendance /> </ProtectedRoute> },
+        { path: '/analysis', element: <ProtectedRoute> <AdminAnalysis /> </ProtectedRoute> },
+        { path: '/chat', element: <ProtectedRoute> <AdminChat /> </ProtectedRoute> },
+        { path: '/announce', element: <ProtectedRoute> <AdminAnnounce /> </ProtectedRoute> },
+        { path: '/settings', element: <ProtectedRoute> <AdminSettings /> </ProtectedRoute> },
         { path: '/verification', element: <Verification /> },
         { path: '/login', element: <Login /> },
-        { path: '*', element: <AdminProtectedRoute> <NotFound /> </AdminProtectedRoute> },
+        { path: '/landingpage', element: <LandingPage /> },
+        { path: '*', element: <ProtectedRoute> <NotFound /> </ProtectedRoute> },
       ]
     }
   ])
@@ -91,24 +89,24 @@ function App() {
   //! Lecturer Routes
   let lecturer_routers = createBrowserRouter([
     {
-      path: '', element: <LecturerLayout />, children: [
-        { index: true, element: <LecturerProtectedRoute> <LecturerHome /> </LecturerProtectedRoute> },
-        { path: '/home', element: <LecturerProtectedRoute> <LecturerHome /> </LecturerProtectedRoute> },
-        { path: '/profile', element: <LecturerProtectedRoute> <LecturerProfile /> </LecturerProtectedRoute> },
-        { path: '/timetable', element: <LecturerProtectedRoute> <LecturerTimeTable /> </LecturerProtectedRoute> },
-        { path: '/courses', element: <LecturerProtectedRoute> <LecturerCourses /> </LecturerProtectedRoute>, children: [
+      path: '', element: <Layout />, children: [
+        { index: true, element: <ProtectedRoute> <LecturerHome /> </ProtectedRoute> },
+        { path: '/home', element: <ProtectedRoute> <LecturerHome /> </ProtectedRoute> },
+        { path: '/profile', element: <ProtectedRoute> <LecturerProfile /> </ProtectedRoute> },
+        { path: '/timetable', element: <ProtectedRoute> <LecturerTimeTable /> </ProtectedRoute> },
+        { path: '/courses', element: <ProtectedRoute> <LecturerCourses /> </ProtectedRoute>, children: [
           { index: true, element: <LecturerAllCourses /> },
           { path: 'coursedetails', element: <LecturerCoursesDetails /> },
         ] },
-        { path: '/tasks', element: <LecturerProtectedRoute> <LecturerTasks /> </LecturerProtectedRoute> },
-        { path: '/students', element: <LecturerProtectedRoute> <LecturerStudents /> </LecturerProtectedRoute> },
-        { path: '/attendance', element: <LecturerProtectedRoute> <LecturerAttendance /> </LecturerProtectedRoute> },
-        { path: '/analysis', element: <LecturerProtectedRoute> <LecturerAnalysis /> </LecturerProtectedRoute> },
-        { path: '/chat', element: <LecturerProtectedRoute> <LecturerChat /> </LecturerProtectedRoute> },
+        { path: '/tasks', element: <ProtectedRoute> <LecturerTasks /> </ProtectedRoute> },
+        { path: '/students', element: <ProtectedRoute> <LecturerStudents /> </ProtectedRoute> },
+        { path: '/attendance', element: <ProtectedRoute> <LecturerAttendance /> </ProtectedRoute> },
+        { path: '/analysis', element: <ProtectedRoute> <LecturerAnalysis /> </ProtectedRoute> },
+        { path: '/chat', element: <ProtectedRoute> <LecturerChat /> </ProtectedRoute> },
         { path: '/verification', element: <Verification /> },
         { path: '/login', element: <Login /> },
         { path: '/landingpage', element: <LandingPage /> },
-        { path: '*', element: <LecturerProtectedRoute> <NotFound /> </LecturerProtectedRoute> },
+        { path: '*', element: <ProtectedRoute> <NotFound /> </ProtectedRoute> },
       ]
     }
   ])
@@ -116,22 +114,24 @@ function App() {
   //! Student Routes
   let student_routers = createBrowserRouter([
     {
-      path: '', element: <StudentLayout />, children: [
-        { index: true, element: <StudentProtectedRoute> <Home /> </StudentProtectedRoute> },
-        { path: '/home', element: <StudentProtectedRoute> <Home /> </StudentProtectedRoute> },
-        { path: '/profile', element: <StudentProtectedRoute> <Profile /> </StudentProtectedRoute> },
-        { path: '/calender', element: <StudentProtectedRoute> <Calender /> </StudentProtectedRoute> },
-        { path: '/courses', element: <StudentProtectedRoute> <Courses /> </StudentProtectedRoute> },
-        { path: '/resources', element: <StudentProtectedRoute> <Resources /> </StudentProtectedRoute> },
-        { path: '/classrooms', element: <StudentProtectedRoute> <Classrooms /> </StudentProtectedRoute> },
-        { path: '/assignments', element: <StudentProtectedRoute> <Assignments /> </StudentProtectedRoute> },
-        { path: '/exams', element: <StudentProtectedRoute> <Exams /> </StudentProtectedRoute> },
-        { path: '/chat', element: <StudentProtectedRoute> <Chat /> </StudentProtectedRoute> },
-        { path: '/faq', element: <StudentProtectedRoute> <FAQ /> </StudentProtectedRoute> },
-        { path: '/help', element: <StudentProtectedRoute> <Help /> </StudentProtectedRoute> },
+      path: '', element: <Layout />, children: [
+        { index: true, element: <ProtectedRoute> <Home /> </ProtectedRoute> },
+        { path: '/home', element: <ProtectedRoute> <Home /> </ProtectedRoute> },
+        { path: '/profile', element: <ProtectedRoute> <Profile /> </ProtectedRoute> },
+        { path: '/calender', element: <ProtectedRoute> <Calender /> </ProtectedRoute> },
+        { path: '/courses', element: <ProtectedRoute> <Courses /> </ProtectedRoute> },
+        { path: '/resources', element: <ProtectedRoute> <Resources /> </ProtectedRoute> },
+        { path: '/classrooms', element: <ProtectedRoute> <Classrooms /> </ProtectedRoute> },
+        { path: '/assignments', element: <ProtectedRoute> <Assignments /> </ProtectedRoute> },
+        { path: '/exams', element: <ProtectedRoute> <Exams /> </ProtectedRoute> },
+        { path: '/chat', element: <ProtectedRoute> <Chat /> </ProtectedRoute> },
+        { path: '/faq', element: <ProtectedRoute> <FAQ /> </ProtectedRoute> },
+        { path: '/help', element: <ProtectedRoute> <Help /> </ProtectedRoute> },
+        { path: '/settings', element: <ProtectedRoute> <Settings /> </ProtectedRoute> },
         { path: '/verification', element: <Verification /> },
         { path: '/login', element: <Login /> },
-        { path: '*', element: <StudentProtectedRoute> <NotFound /> </StudentProtectedRoute> },
+        { path: '/landingpage', element: <LandingPage /> },
+        { path: '*', element: <ProtectedRoute> <NotFound /> </ProtectedRoute> },
       ]
     }
   ])

@@ -1,13 +1,13 @@
 import React from 'react'
-import style from './LecturerProtectedRoute.module.css'
 import { Navigate } from 'react-router-dom'
+import style from './ProtectedRoute.module.css'
 
-export default function LecturerProtectedRoute({ children }) {
+export default function ProtectedRoute({ children }) {
   
   if (localStorage.getItem('userToken')) {
     return children
   } else {
-    return <Navigate to="/landingpage" /> 
+    return <Navigate to="/landingpage" />
   }
 
   // if (null) {

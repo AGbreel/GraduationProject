@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Badge, Box, IconButton, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material';
+import { Badge, Box, Drawer, IconButton, List, ListItem, ListItemText, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
@@ -46,9 +46,9 @@ const AppBar = styled(MuiAppBar, {
 
 
 
-export default function LecturerNavbar({ open, handleDrawerOpen, setMode }) {
+export default function Navbar({ open, handleDrawerOpen, setMode }) {
     const location = useLocation();
-  
+
     // const currentPage = location.pathname.split("/").pop() || "Home";
     const relatedPath = location.pathname.split("/").join(" › ");
 
@@ -95,9 +95,11 @@ export default function LecturerNavbar({ open, handleDrawerOpen, setMode }) {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={pushToLogin}>Login</MenuItem>
-            <MenuItem onClick={pushToLogin}>Logout</MenuItem>
+            <Box sx={{ bgcolor: "#fff" }}>
+                <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+                <MenuItem onClick={pushToLogin}>Login</MenuItem>
+                <MenuItem onClick={pushToLogin}>Logout</MenuItem>
+            </Box>
         </Menu>
     );
 
@@ -153,6 +155,18 @@ export default function LecturerNavbar({ open, handleDrawerOpen, setMode }) {
         </Menu>
     );
 
+    const [openDrawer, setOpenDrawer] = useState(false);
+
+    const notifications = [
+        "New assignment in Web Development",
+        "Your attendance for Database Systems is marked",
+        "Upcoming quiz in Data Structures",
+    ];
+
+    const toggleDrawer = () => {
+        setOpenDrawer(!openDrawer);
+    };
+
     return (
         <>
             <Box sx={{ flexGrow: 1 }}>
@@ -175,7 +189,7 @@ export default function LecturerNavbar({ open, handleDrawerOpen, setMode }) {
                             <MenuIcon />
                         </IconButton>
 
-                        <Typography sx={{ color: '#4b5e4b', fontWeight: 'bold'}} variant="h6" gutterBottom> UniHub {relatedPath}</Typography>
+                        <Typography sx={{ color: '#4b5e4b', fontWeight: 'bold' }} variant="h6" gutterBottom> UniHub {relatedPath}</Typography>
 
                         <Box flexGrow={1} />
 
@@ -195,12 +209,54 @@ export default function LecturerNavbar({ open, handleDrawerOpen, setMode }) {
                                         prevMode === 'light' ? 'dark' : 'light',);
                                 }} color="inherit" aria-label="delete">
                                     <DarkModeOutlinedIcon />
-                                </IconButton>}
+                                </IconButton>
+                            }
 
-
-                            <IconButton color="inherit" aria-label="add to shopping cart">
-                                <NotificationsOutlinedIcon />
+                            <IconButton color="inherit" onClick={toggleDrawer}>
+                                <Badge badgeContent={notifications.length} color="error">
+                                    <NotificationsOutlinedIcon />
+                                </Badge>
                             </IconButton>
+
+                            {/* Notification Drawer */}
+                            <Drawer
+                                anchor="right"
+                                open={openDrawer}
+                                onClose={toggleDrawer}
+                                PaperProps={{
+                                    sx: {
+                                        "& .MuiListItemText-primary": { color: "white" },
+                                        "& .MuiListItemText-secondary": { color: "white" },
+                                        "& .MuiListItemIcon-root": { color: "white" },
+                                        height: "auto",
+                                        maxHeight: "90vh",
+                                        width: "300px", // ضبط العرض
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center", // توسيط أفقي
+                                        justifyContent: "center", // توسيط رأسي
+                                        padding: "16px",
+                                    },
+                                }}
+                            >
+                                <Box sx={{ textAlign: "center", width: "100%", color: "#fff", pt: 10 }}>
+                                    <Typography variant="h6" fontWeight="bold" color="primary" gutterBottom>
+                                        ( Notifications )
+                                    </Typography>
+
+                                    <List sx={{ width: "100%" }}>
+                                        {notifications.length > 0 ? (
+                                            notifications.map((notification, index) => (
+                                                <ListItem key={index} divider sx={{ textAlign: "center" }}>
+                                                    <ListItemText primary={<Typography component="span">{notification}</Typography>} />
+                                                </ListItem>
+                                            ))
+                                        ) : (
+                                            <Typography fontWeight="bold" variant='h6' color="primary">( No new notifications )</Typography>
+                                        )}
+                                    </List>
+                                </Box>
+                            </Drawer>
 
                             <IconButton color="inherit" aria-label="add to shopping cart">
                                 <SettingsOutlinedIcon />

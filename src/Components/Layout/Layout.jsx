@@ -2,9 +2,11 @@ import React from 'react';
 import { Outlet } from 'react-router-dom'
 import { Box, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import LecturerNavbar from '../LecturerNavbar/LecturerNavbar';
-import LecturerDrawer from '../LecturerDrawer/LecturerDrawer';
-import { getDesignTokens } from '../../../../../theme';
+import { getDesignTokens } from '../../theme';
+import MyDrawer from '../MyDrawer/MyDrawer';
+import Navbar from '../Navbar/Navbar';
+import style from './Layout.module.css'
+import Chat from '../Chat/Chat';
 
 
 const DrawerHeader1 = styled("div")(({ theme }) => ({
@@ -21,7 +23,7 @@ const DrawerHeader2 = styled("div")(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-export default function LecturerLayout() {
+export default function Layout() {
 
   const [open, setOpen] = React.useState(false);
 
@@ -43,10 +45,10 @@ export default function LecturerLayout() {
         <Box sx={{ display: 'flex' }}>
           <CssBaseline />
           {localStorage.getItem('userToken') && (
-            <LecturerNavbar open={open} handleDrawerOpen={handleDrawerOpen} setMode={setMode} />
+            <Navbar open={open} handleDrawerOpen={handleDrawerOpen} setMode={setMode} />
           )}
           {localStorage.getItem('userToken') && (
-            <LecturerDrawer open={open} handleDrawerClose={handleDrawerClose} />
+            <MyDrawer open={open} handleDrawerClose={handleDrawerClose} />
           )}
 
           <Box component="main" sx={{ width: "100%", flexGrow: 1 }}>
@@ -54,8 +56,11 @@ export default function LecturerLayout() {
               <DrawerHeader1 open={open} handleDrawerOpen={handleDrawerOpen} setMode={setMode} />
               : <DrawerHeader2 open={open} handleDrawerOpen={handleDrawerOpen} setMode={setMode} />
             }
-             
+
             <Outlet></Outlet>
+
+            {localStorage.getItem('userToken') && <Chat />}
+
           </Box>
         </Box>
       </ThemeProvider>

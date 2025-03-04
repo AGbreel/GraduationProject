@@ -20,8 +20,6 @@ const rows = [
   { id: 15, name: 'Dalia Ali', studentId: '2023015', attendance: 'Present', grade: 'A', phone: '01598765432', absences: 0, courses: 'Biology, Chemistry', currentStatus: 'In class' }
 ];
 
-
-
 const columns = [
   { field: 'name', headerName: 'Student Name', width: 200 },
   { field: 'studentId', headerName: 'Student ID', width: 150 },
@@ -38,7 +36,6 @@ const columns = [
   { field: 'courses', headerName: 'Courses', width: 200 },
   { field: 'currentStatus', headerName: 'Current Status', width: 150 },
 ];
-
 
 export default function LecturerStudents() {
   return (

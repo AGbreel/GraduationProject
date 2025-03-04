@@ -49,8 +49,8 @@ const AppBar = styled(MuiAppBar, {
 export default function LecturerNavbar({ open, handleDrawerOpen, setMode }) {
     const location = useLocation();
   
-    // استخراج آخر جزء من المسار ليكون اسم الصفحة الحالية
-    const currentPage = location.pathname.split("/").pop() || "Home";
+    // const currentPage = location.pathname.split("/").pop() || "Home";
+    const relatedPath = location.pathname.split("/").join(" › ");
 
     const theme = useTheme();
 
@@ -175,7 +175,7 @@ export default function LecturerNavbar({ open, handleDrawerOpen, setMode }) {
                             <MenuIcon />
                         </IconButton>
 
-                        <Typography sx={{ color: '#4b5e4b', fontWeight: 'bold'}} variant="h6" gutterBottom> UniHub › {currentPage}</Typography>
+                        <Typography sx={{ color: '#4b5e4b', fontWeight: 'bold'}} variant="h6" gutterBottom> UniHub {relatedPath}</Typography>
 
                         <Box flexGrow={1} />
 

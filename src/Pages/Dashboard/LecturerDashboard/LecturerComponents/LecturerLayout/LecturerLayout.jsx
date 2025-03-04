@@ -49,7 +49,7 @@ export default function LecturerLayout() {
             <LecturerDrawer open={open} handleDrawerClose={handleDrawerClose} />
           )}
 
-          <Box component="main" sx={{ flexGrow: 30 }}>
+          <Box component="main" sx={{ width: "100%", flexGrow: 1 }}>
             {localStorage.getItem('userToken') ?
               <DrawerHeader1 open={open} handleDrawerOpen={handleDrawerOpen} setMode={setMode} />
               : <DrawerHeader2 open={open} handleDrawerOpen={handleDrawerOpen} setMode={setMode} />

@@ -51,6 +51,8 @@ import NotFound from './Components/NotFound/NotFound'
 import { ThemeProvider } from "@mui/material";
 import { useState } from 'react'
 import LandingPage from './Components/LandingPage/LandingPage'
+import LecturerCoursesDetails from './Pages/Dashboard/LecturerDashboard/LecturerPages/LecturerCoursesDetails/LecturerCoursesDetails'
+import LecturerAllCourses from './Pages/Dashboard/LecturerDashboard/LecturerPages/LecturerAllCourses/LecturerAllCourses'
 
 
 
@@ -94,7 +96,10 @@ function App() {
         { path: '/home', element: <LecturerProtectedRoute> <LecturerHome /> </LecturerProtectedRoute> },
         { path: '/profile', element: <LecturerProtectedRoute> <LecturerProfile /> </LecturerProtectedRoute> },
         { path: '/timetable', element: <LecturerProtectedRoute> <LecturerTimeTable /> </LecturerProtectedRoute> },
-        { path: '/courses', element: <LecturerProtectedRoute> <LecturerCourses /> </LecturerProtectedRoute> },
+        { path: '/courses', element: <LecturerProtectedRoute> <LecturerCourses /> </LecturerProtectedRoute>, children: [
+          { index: true, element: <LecturerAllCourses /> },
+          { path: 'coursedetails', element: <LecturerCoursesDetails /> },
+        ] },
         { path: '/tasks', element: <LecturerProtectedRoute> <LecturerTasks /> </LecturerProtectedRoute> },
         { path: '/students', element: <LecturerProtectedRoute> <LecturerStudents /> </LecturerProtectedRoute> },
         { path: '/attendance', element: <LecturerProtectedRoute> <LecturerAttendance /> </LecturerProtectedRoute> },

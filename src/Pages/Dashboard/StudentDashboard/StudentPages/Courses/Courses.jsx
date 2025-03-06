@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Box, Typography, Drawer, IconButton } from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import CloseIcon from '@mui/icons-material/Close';
 import { selectCourse } from '../../../../../redux/coursesSlice';
 import Header from '../../../../../Components/Header/Header';
+import { Box, Typography, Drawer, IconButton, CssBaseline, AppBar, Toolbar } from '@mui/material';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import CloseIcon from '@mui/icons-material/Close';
+import MenuIcon from '@mui/icons-material/Menu';
+
+
+const drawerWidth = 700;
 
 export default function Courses() {
   const dispatch = useDispatch();
@@ -24,11 +28,13 @@ export default function Courses() {
 
   const handleRowClick = (params) => {
     dispatch(selectCourse(params.id));
-    setDrawerOpen(true);
+    if (!drawerOpen) {
+      setDrawerOpen(true);
+    }
   };
 
-  const handleCloseDrawer = () => {
-    setDrawerOpen(false);
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen);
   };
 
   return (
@@ -36,7 +42,7 @@ export default function Courses() {
       <Header title="Courses" subTitle="View all your enrolled courses" />
 
       <Box>
-        <Box sx={{ height: 'auto', width: "40%",  }}>
+        <Box sx={{ height: 'auto', width: "40%" }}>
           <DataGrid
             sx={{
               '& .MuiDataGrid-toolbarContainer': {
@@ -53,14 +59,28 @@ export default function Courses() {
         </Box>
 
         <Drawer
+          variant="persistent"
           anchor="right"
           open={drawerOpen}
-          onClose={handleCloseDrawer}
-          sx={{ backgroundColor: 'transparent' }}
+          sx={{
+            width: drawerWidth,
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+            },
+          }}
+          PaperProps={{
+            sx: {
+              p: 2,
+              backgroundColor: '#f4f4f4',
+            }
+          }}
         >
-          <Box sx={{ width: 700, p: 2, pt: 10 }}>
-            <IconButton onClick={handleCloseDrawer} sx={{ mb: 2 }}> <CloseIcon /> </IconButton>
-
+          <Box sx={{ p: 2 }}>
+            <IconButton onClick={handleDrawerToggle} sx={{ mb: 2, mt: 7 }}>
+              <CloseIcon />
+            </IconButton>
             {selectedCourse ? (
               <div>
                 <Typography variant="h6" component="h2">

@@ -158,7 +158,7 @@ export default function MyDrawer({ open, handleDrawerClose }) {
       <DrawerHeader>
         <Typography align="center" sx={{ fontSize: open ? 18 : 0, transition: "0.25s", color: theme.palette.primary.main }} > <SchoolOutlined fontSize='large' sx={{ mr: 1 }} />  UniHub </Typography>
 
-        <IconButton onClick={handleDrawerClose}>
+        <IconButton onClick={handleDrawerClose} sx={{ color: theme.palette.primary.main }}>
           {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </IconButton>
       </DrawerHeader>

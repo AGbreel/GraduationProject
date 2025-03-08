@@ -27,7 +27,7 @@
     "axios": "^1.7.9",
     "firebase": "^11.3.1",
     "formik": "^2.4.6",
-    "framer-motion": "^12.4.7",
+    "framer-motion": "^12.4.10",
     "generate-react-cli": "^8.4.9",
     "lucide-react": "^0.474.0",
     "moment": "^2.30.1",

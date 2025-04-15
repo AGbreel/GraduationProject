@@ -1,30 +1,51 @@
 'use client';
 
 import { Box, Button, TextField, Typography, Avatar, Paper, Container, Alert, Divider } from "@mui/material";
-import { PersonOutlined, LockOutlined } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { PersonOutlined, LockOutlined, EmailOutlined } from "@mui/icons-material";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from 'yup'
 import styles from "./Login.module.css"
+import axios from "axios";
+import { useContext, useState } from "react";
+import { UserContext } from "../../../Context/userContext";
 
 
 export default function Login() {
 
+  const [apiError, setApiError] = useState(null)
+  const [loading, setLoading] = useState(false)
+  let navigate = useNavigate();
+  let { setUserData } = useContext(UserContext);
+
   //! Function to handle form submission
-  const handleLogin = (values) => {
-    console.log(values);
+  const handleLogin = async (values) => {
+    try {
+      setLoading(true)
+      let { data } = await axios.post("http://localhost:5000/api/auth/login", values);
+      console.log(data);
+      localStorage.setItem("userToken", data.token);
+      setUserData(data.token);
+      navigate("/");
+      setLoading(false)
+
+    } catch (error) {
+      console.log("Error Occured: ", error.response.data.error);
+      setApiError(error.response.data.error);
+      setLoading(false)
+    }
   }
 
   //! Validation schema for form inputs
   let validationSchema = Yup.object().shape({
-    username: Yup.string().min(3, "Username must be at least 3 characters").max(20, "Username must be at most 20 characters").required("Username is required"),
+    email: Yup.string().email("Invalid email address").required("Email is required"),
     password: Yup.string().min(6, "Password must be at least 6 characters").matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/, "Password must contain at least one letter and one number").required("Password is required"),
   })
 
   //! Formik configuration
   let formik = useFormik({
     initialValues: {
-      username: '',
+      email: '',
       password: '',
     },
     validationSchema: validationSchema,
@@ -71,26 +92,28 @@ export default function Login() {
           <Avatar sx={{ bgcolor: "#4b5e4b", width: 60, height: 60, mb: 1, mx: "auto" }}> 📖 </Avatar>
           <Typography variant="h5" sx={{ fontWeight: "bold", color: "#4b5e4b", textAlign: "center" }}> UniHub </Typography>
           <Divider sx={{ backgroundColor: "#4b5e4b", mb: 1, height: 3, width: "25%", mx: "auto" }} />
-          
-          <form onSubmit={formik.handleSubmit}>
-          <Typography variant="h6" sx={{ fontWeight: "bold", color: "#4b5e4b", textAlign: "left" }}> Welcome back </Typography>
 
-            <div className="username">
+          <form onSubmit={formik.handleSubmit}>
+            <Typography variant="h6" sx={{ fontWeight: "bold", color: "#4b5e4b", textAlign: "left" }}> Welcome back </Typography>
+
+            {apiError && <Alert sx={{ mt: 0, py: 0, borderRadius: "40px" }} severity="error">{apiError}</Alert>}
+
+            <div className="email">
               <div className={styles.inputBox}>
                 <div className="relative">
-                  <input placeholder="Username" name="username" value={formik.values.username} onChange={formik.handleChange} onBlur={formik.handleBlur} margin="normal" variant="outlined" label="Username" type="text" />
-                  <label htmlFor="username">Username</label>
-                  <PersonOutlined sx={{ color: "gray", mr: 1, position: "absolute", top: "50%", right: "10px", transform: "translateY(-50%)" }} />
+                  <input className={styles.input} placeholder="Email" name="email" value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur} margin="normal" variant="outlined" label="Email" type="email" />
+                  <label className={styles.label} htmlFor="email">Email</label>
+                  <EmailOutlined sx={{ color: "gray", mr: 1, position: "absolute", top: "50%", right: "10px", transform: "translateY(-50%)" }} />
                 </div>
-                {formik.touched.username && formik.errors.username && <Alert sx={{ mt: 1, py: 0, borderRadius: "40px" }} severity="error">{formik.errors.username}</Alert>}
+                {formik.touched.email && formik.errors.email && <Alert sx={{ mt: 1, py: 0, borderRadius: "40px" }} severity="error">{formik.errors.email}</Alert>}
               </div>
             </div>
 
             <div className="password">
               <div className={styles.inputBox}>
                 <div className="relative">
-                  <input placeholder="Password" name="password" value={formik.values.password} onChange={formik.handleChange} onBlur={formik.handleBlur} margin="normal" variant="outlined" label="Password" type="password" />
-                  <label htmlFor="password">Password</label>
+                  <input className={styles.input} placeholder="Password" name="password" value={formik.values.password} onChange={formik.handleChange} onBlur={formik.handleBlur} margin="normal" variant="outlined" label="Password" type="password" />
+                  <label className={styles.label} htmlFor="password">Password</label>
                   <LockOutlined sx={{ color: "gray", mr: 1, position: "absolute", top: "50%", right: "10px", transform: "translateY(-50%)" }} />
                 </div>
                 {formik.touched.password && formik.errors.password && <Alert sx={{ mt: 1, py: 0, borderRadius: "40px" }} severity="error">{formik.errors.password}</Alert>}
@@ -98,9 +121,11 @@ export default function Login() {
             </div>
 
             <div className={styles.additional}>
-              <div className={styles.forgetPass}> <a href="#">Forget Password</a> </div>
+              <div className={styles.forgetPass}> <Link to="/changePassword" href="#">Forget Password</Link> </div>
 
-              <button type="submit" className={styles.btn}> Sign in </button>
+              {loading ? <button type="submit" className={styles.btn}>  <i className="fas fa-spinner fa-spin-pulse"></i> </button>
+                : <button type="submit" className={styles.btn}> Sign in </button>}
+
 
               <Typography variant="body2" sx={{ mt: 2, color: "#4b5e4b", textAlign: "center" }}>
                 Need your credentials?

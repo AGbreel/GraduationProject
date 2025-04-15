@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Outlet } from 'react-router-dom'
 import { Box, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -7,6 +7,7 @@ import MyDrawer from '../MyDrawer/MyDrawer';
 import Navbar from '../Navbar/Navbar';
 import style from './Layout.module.css'
 import Chat from '../Chat/Chat';
+import { UserContext } from '../../Context/userContext';
 
 
 const DrawerHeader1 = styled("div")(({ theme }) => ({
@@ -26,6 +27,8 @@ const DrawerHeader2 = styled("div")(({ theme }) => ({
 export default function Layout() {
 
   const [open, setOpen] = React.useState(false);
+  
+  let { userData } = useContext(UserContext);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -44,22 +47,22 @@ export default function Layout() {
       <ThemeProvider theme={theme}>
         <Box sx={{ display: 'flex' }}>
           <CssBaseline />
-          {localStorage.getItem('userToken') && (
+          {userData && (
             <Navbar open={open} handleDrawerOpen={handleDrawerOpen} setMode={setMode} />
           )}
-          {localStorage.getItem('userToken') && (
+          {userData && (
             <MyDrawer open={open} handleDrawerClose={handleDrawerClose} />
           )}
 
           <Box component="main" sx={{ width: "100%", flexGrow: 1 }}>
-            {localStorage.getItem('userToken') ?
+            {userData ?
               <DrawerHeader1 open={open} handleDrawerOpen={handleDrawerOpen} setMode={setMode} />
               : <DrawerHeader2 open={open} handleDrawerOpen={handleDrawerOpen} setMode={setMode} />
             }
 
             <Outlet></Outlet>
 
-            {localStorage.getItem('userToken') && <Chat />}
+            {userData && <Chat />}
 
           </Box>
         </Box>

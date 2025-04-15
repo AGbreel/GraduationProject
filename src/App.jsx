@@ -10,7 +10,6 @@ import AdminSchedule from './Pages/Dashboard/AdminDashboard/AdminPages/AdminSche
 import AdminCourses from './Pages/Dashboard/AdminDashboard/AdminPages/AdminCourses/AdminCourses'
 import AdminAttendance from './Pages/Dashboard/AdminDashboard/AdminPages/AdminAttendance/AdminAttendance'
 import AdminAnalysis from './Pages/Dashboard/AdminDashboard/AdminPages/AdminAnalysis/AdminAnalysis'
-import AdminChat from './Pages/Dashboard/AdminDashboard/AdminPages/AdminChat/AdminChat'
 import AdminAnnounce from './Pages/Dashboard/AdminDashboard/AdminPages/AdminAnnounce/AdminAnnounce'
 import AdminSettings from './Pages/Dashboard/AdminDashboard/AdminPages/AdminSettings/AdminSettings'
 
@@ -23,7 +22,6 @@ import LecturerTasks from './Pages/Dashboard/LecturerDashboard/LecturerPages/Lec
 import LecturerStudents from './Pages/Dashboard/LecturerDashboard/LecturerPages/LecturerStudents/LecturerStudents'
 import LecturerAttendance from './Pages/Dashboard/LecturerDashboard/LecturerPages/LecturerAttendance/LecturerAttendance'
 import LecturerAnalysis from './Pages/Dashboard/LecturerDashboard/LecturerPages/LecturerAnalysis/LecturerAnalysis'
-import LecturerChat from './Pages/Dashboard/LecturerDashboard/LecturerPages/LecturerChat/LecturerChat'
 
 //! Student Import 
 import Home from './Pages/Dashboard/StudentDashboard/StudentPages/Home/Home'
@@ -33,7 +31,7 @@ import Courses from './Pages/Dashboard/StudentDashboard/StudentPages/Courses/Cou
 import Resources from './Pages/Dashboard/StudentDashboard/StudentPages/Resources/Resources'
 import Classrooms from './Pages/Dashboard/StudentDashboard/StudentPages/Classrooms/Classrooms'
 import Assignments from './Pages/Dashboard/StudentDashboard/StudentPages/Assignments/Assignments'
-import Exams from './Pages/Dashboard/StudentDashboard/StudentPages/Exams/Exams'
+import StudentExam from './Pages/Dashboard/StudentDashboard/StudentPages/Exams/studentExam'
 import Chat from './Components/Chat/Chat'
 import FAQ from './Pages/Dashboard/StudentDashboard/StudentPages/FAQ/FAQ'
 import Help from './Pages/Dashboard/StudentDashboard/StudentPages/Help/Help'
@@ -50,6 +48,10 @@ import LecturerAllCourses from './Pages/Dashboard/LecturerDashboard/LecturerPage
 import Layout from './Components/Layout/Layout'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
 import Settings from './Pages/Dashboard/StudentDashboard/StudentPages/Settings/Settings'
+import UserContextProvider, { UserContext } from './Context/userContext'
+import SpaceContextProvider from './Context/spaceContext'
+import AuthContextProvider from './Context/authContext'
+import ChangePassword from './Pages/Auth/ChangePassword/ChangePassword'
 
 
 
@@ -57,8 +59,9 @@ function App() {
 
   // const [role, setRole] = useState('admin');
   // const [role, setRole] = useState('lecturer');
-  const [role, setRole] = useState('student');
-  
+  // const [role, setRole] = useState('student');
+  const [role, setRole] = useState('user');
+
 
   //! Admin Routes
   let admin_routers = createBrowserRouter([
@@ -75,7 +78,7 @@ function App() {
         { path: '/courses', element: <ProtectedRoute> <AdminCourses /> </ProtectedRoute> },
         { path: '/attendance', element: <ProtectedRoute> <AdminAttendance /> </ProtectedRoute> },
         { path: '/analysis', element: <ProtectedRoute> <AdminAnalysis /> </ProtectedRoute> },
-        { path: '/chat', element: <ProtectedRoute> <AdminChat /> </ProtectedRoute> },
+        { path: '/chat', element: <ProtectedRoute> <Chat /> </ProtectedRoute> },
         { path: '/announce', element: <ProtectedRoute> <AdminAnnounce /> </ProtectedRoute> },
         { path: '/settings', element: <ProtectedRoute> <AdminSettings /> </ProtectedRoute> },
         { path: '/verification', element: <Verification /> },
@@ -94,15 +97,17 @@ function App() {
         { path: '/home', element: <ProtectedRoute> <LecturerHome /> </ProtectedRoute> },
         { path: '/profile', element: <ProtectedRoute> <LecturerProfile /> </ProtectedRoute> },
         { path: '/timetable', element: <ProtectedRoute> <LecturerTimeTable /> </ProtectedRoute> },
-        { path: '/courses', element: <ProtectedRoute> <LecturerCourses /> </ProtectedRoute>, children: [
-          { index: true, element: <LecturerAllCourses /> },
-          { path: 'coursedetails', element: <LecturerCoursesDetails /> },
-        ] },
+        {
+          path: '/courses', element: <ProtectedRoute> <LecturerCourses /> </ProtectedRoute>, children: [
+            { index: true, element: <LecturerAllCourses /> },
+            { path: 'coursedetails', element: <LecturerCoursesDetails /> },
+          ]
+        },
         { path: '/tasks', element: <ProtectedRoute> <LecturerTasks /> </ProtectedRoute> },
         { path: '/students', element: <ProtectedRoute> <LecturerStudents /> </ProtectedRoute> },
         { path: '/attendance', element: <ProtectedRoute> <LecturerAttendance /> </ProtectedRoute> },
         { path: '/analysis', element: <ProtectedRoute> <LecturerAnalysis /> </ProtectedRoute> },
-        { path: '/chat', element: <ProtectedRoute> <LecturerChat /> </ProtectedRoute> },
+        { path: '/chat', element: <ProtectedRoute> <Chat /> </ProtectedRoute> },
         { path: '/verification', element: <Verification /> },
         { path: '/login', element: <Login /> },
         { path: '/landingpage', element: <LandingPage /> },
@@ -123,7 +128,7 @@ function App() {
         { path: '/resources', element: <ProtectedRoute> <Resources /> </ProtectedRoute> },
         { path: '/classrooms', element: <ProtectedRoute> <Classrooms /> </ProtectedRoute> },
         { path: '/assignments', element: <ProtectedRoute> <Assignments /> </ProtectedRoute> },
-        { path: '/exams', element: <ProtectedRoute> <Exams /> </ProtectedRoute> },
+        { path: '/exams', element: <ProtectedRoute> <StudentExam /> </ProtectedRoute> },
         { path: '/chat', element: <ProtectedRoute> <Chat /> </ProtectedRoute> },
         { path: '/faq', element: <ProtectedRoute> <FAQ /> </ProtectedRoute> },
         { path: '/help', element: <ProtectedRoute> <Help /> </ProtectedRoute> },
@@ -136,16 +141,70 @@ function App() {
     }
   ])
 
+  //! User Routes
+  let user_routers = createBrowserRouter([
+    {
+      path: '', element: <Layout />, children: [
+        { index: true, element: <ProtectedRoute> <Home /> </ProtectedRoute> },
+        { path: '/home', element: <ProtectedRoute> <Home /> </ProtectedRoute> },
+        { path: '/calender', element: <ProtectedRoute> <Calender /> </ProtectedRoute> },
+        { path: '/courses', element: <ProtectedRoute> <Courses /> </ProtectedRoute> },
+        { path: '/profile', element: <ProtectedRoute> <Profile /> </ProtectedRoute> },
+        // { path: '/resources', element: <ProtectedRoute> <Resources /> </ProtectedRoute> },
+        // { path: '/classrooms', element: <ProtectedRoute> <Classrooms /> </ProtectedRoute> },
+        // { path: '/faq', element: <ProtectedRoute> <FAQ /> </ProtectedRoute> },
+        { path: '/assignments', element: <ProtectedRoute> <Assignments /> </ProtectedRoute> },
+        { path: '/exams', element: <ProtectedRoute> <StudentExam /> </ProtectedRoute> },
+        { path: '/chat', element: <ProtectedRoute> <Chat /> </ProtectedRoute> },
+        { path: '/help', element: <ProtectedRoute> <Help /> </ProtectedRoute> },
+        { path: '/settings', element: <ProtectedRoute> <Settings /> </ProtectedRoute> },
+        { path: '/verification', element: <Verification /> },
+        { path: '/login', element: <Login /> },
+        { path: '/changePassword', element: <ChangePassword /> },
+        { path: '/landingpage', element: <LandingPage /> },
+        { path: '*', element: <ProtectedRoute> <NotFound /> </ProtectedRoute> },
+      ]
+    }
+  ])
+
   return (
     <>
-    {/* <ThemeProvider theme={theme}> */}
-    {role == 'admin' ? 
-     <RouterProvider router={admin_routers}></RouterProvider>
-     : role == 'lecturer' ? 
-     <RouterProvider router={lecturer_routers}></RouterProvider>
-     : <RouterProvider router={student_routers}></RouterProvider>
-    }
-    {/* </ThemeProvider> */}
+      {/* <ThemeProvider theme={theme}> */}
+      {role == 'admin' ?
+        <UserContextProvider>
+          <AuthContextProvider>
+            <SpaceContextProvider>
+              <RouterProvider router={admin_routers}></RouterProvider>
+            </SpaceContextProvider>
+          </AuthContextProvider>
+        </UserContextProvider>
+        : role == 'lecturer' ?
+          <UserContextProvider>
+            <AuthContextProvider>
+              <SpaceContextProvider>
+                <RouterProvider router={lecturer_routers}></RouterProvider>
+              </SpaceContextProvider>
+            </AuthContextProvider>
+          </UserContextProvider>
+          : role == 'student' ?
+            <UserContextProvider>
+              <AuthContextProvider>
+                <SpaceContextProvider>
+                  <RouterProvider router={student_routers}></RouterProvider>
+                </SpaceContextProvider>
+              </AuthContextProvider>
+            </UserContextProvider>
+            : role == 'user' ?
+              <UserContextProvider>
+                <AuthContextProvider>
+                  <SpaceContextProvider>
+                    <RouterProvider router={user_routers}></RouterProvider>
+                  </SpaceContextProvider>
+                </AuthContextProvider>
+              </UserContextProvider>
+              : null
+      }
+      {/* </ThemeProvider> */}
     </>
   )
 }

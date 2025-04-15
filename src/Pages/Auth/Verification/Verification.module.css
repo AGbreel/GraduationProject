@@ -44,7 +44,7 @@ form {
   margin: 10px 0;
 }
 
-input {
+.input {
   width: 100%;
   height: 50px;
   background: transparent;
@@ -58,11 +58,11 @@ input {
   margin: 0;
 }
 
-input:focus {
+.input:focus {
   border-color: #4b5e4b;
 }
 
-label {
+.label {
   position: absolute;
   top: 50%;
   left: 20px;
@@ -73,7 +73,7 @@ label {
   transition: 0.5s ease;
 }
 
-input:focus ~ label {
+.input:focus ~ .label {
   top: 1px;
   font-size: 0.8em;
   background: #2c4766;

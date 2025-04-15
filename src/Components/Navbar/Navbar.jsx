@@ -1,20 +1,19 @@
 'use client';
 
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Badge, Box, Drawer, IconButton, List, ListItem, ListItemText, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material';
-import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
-import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
+import { Avatar, Badge, Box, Button, Divider, Drawer, IconButton, List, ListItem, ListItemText, Menu, Stack, Typography } from '@mui/material';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import React, { useContext, useState } from 'react';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
-import React, { useState } from 'react';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { UserContext } from '../../Context/userContext';
+import { Add, DarkModeOutlined, GroupOutlined, LightModeOutlined, SearchOutlined } from '@mui/icons-material';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 
 
@@ -47,115 +46,41 @@ const AppBar = styled(MuiAppBar, {
 
 
 export default function Navbar({ open, handleDrawerOpen, setMode }) {
-    const location = useLocation();
-
-    // const currentPage = location.pathname.split("/").pop() || "Home";
-    const relatedPath = location.pathname.split("/").join(" › ");
-
     const theme = useTheme();
+    const location = useLocation();
+    const navigete = useNavigate()
+
+    let { setUserData, userInfo } = useContext(UserContext);
+    const relatedPath = location.pathname.split("/").join(" › ");
+    // const currentPage = location.pathname.split("/").pop() || "Home";
+
 
     const [anchorEl, setAnchorEl] = useState(null);
-    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+    const oopen = Boolean(anchorEl);
+    const handleOpen = (event) => setAnchorEl(event.currentTarget);
+    const handleClose = () => setAnchorEl(null);
 
-    const isMenuOpen = Boolean(anchorEl);
-    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+    const handleLogout = () => {
+        try {
+            localStorage.removeItem("userToken");
+            setUserData(null);
 
-    const handleProfileMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
+            setAnchorEl(null);
+
+            navigete('/login');
+
+        } catch (error) {
+            console.log(error);
+        }
     };
 
-    const handleMobileMenuClose = () => {
-        setMobileMoreAnchorEl(null);
-    };
-
-    const handleMenuClose = () => {
+    const pushToProfile = () => {
         setAnchorEl(null);
-        handleMobileMenuClose();
+        navigete('/profile');
     };
 
-    const pushToLogin = () => {
-        setAnchorEl(null);
-        handleMobileMenuClose();
-    };
-
-    const menuId = 'primary-search-account-menu';
-    const renderMenu = (
-        <Menu
-            anchorEl={anchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            id={menuId}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-        >
-            <Box sx={{ bgcolor: "#fff" }}>
-                <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-                <MenuItem onClick={pushToLogin}>Login</MenuItem>
-                <MenuItem onClick={pushToLogin}>Logout</MenuItem>
-            </Box>
-        </Menu>
-    );
-
-    const mobileMenuId = 'primary-search-account-menu-mobile';
-    const renderMobileMenu = (
-        <Menu
-            anchorEl={mobileMoreAnchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            id={mobileMenuId}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            open={isMobileMenuOpen}
-            onClose={handleMobileMenuClose}
-        >
-            <MenuItem>
-                <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                    <Badge badgeContent={4} color="error">
-                        <MailIcon />
-                    </Badge>
-                </IconButton>
-                <p>Messages</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton
-                    size="large"
-                    aria-label="show 17 new notifications"
-                    color="inherit"
-                >
-                    <Badge badgeContent={17} color="error">
-                        <NotificationsIcon />
-                    </Badge>
-                </IconButton>
-                <p>Notifications</p>
-            </MenuItem>
-            <MenuItem onClick={handleProfileMenuOpen}>
-                <IconButton
-                    size="large"
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <AccountCircle />
-                </IconButton>
-                <p>Profile</p>
-            </MenuItem>
-        </Menu>
-    );
-
-    const [openDrawer, setOpenDrawer] = useState(false);
+    const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
+    const [openMemberDrawer, setOpenMemberDrawer] = useState(false);
 
     const notifications = [
         "New assignment in Web Development",
@@ -163,8 +88,12 @@ export default function Navbar({ open, handleDrawerOpen, setMode }) {
         "Upcoming quiz in Data Structures",
     ];
 
-    const toggleDrawer = () => {
-        setOpenDrawer(!openDrawer);
+    const toggleNotificationDrawer = () => {
+        setOpenNotificationDrawer(!openNotificationDrawer);
+    };
+
+    const toggleMemberDrawer = () => {
+        setOpenMemberDrawer(!openMemberDrawer);
     };
 
     return (
@@ -200,29 +129,80 @@ export default function Navbar({ open, handleDrawerOpen, setMode }) {
                                     setMode((prevMode) =>
                                         prevMode === 'light' ? 'dark' : 'light',);
                                 }} color="inherit" aria-label="add an alarm">
-                                    <LightModeOutlinedIcon />
+                                    <LightModeOutlined />
                                 </IconButton>
-
                                 : <IconButton onClick={() => {
                                     localStorage.setItem("currentMode", theme.palette.mode === 'dark' ? "light" : "dark")
                                     setMode((prevMode) =>
                                         prevMode === 'light' ? 'dark' : 'light',);
                                 }} color="inherit" aria-label="delete">
-                                    <DarkModeOutlinedIcon />
-                                </IconButton>
-                            }
+                                    <DarkModeOutlined />
+                                </IconButton>}
 
-                            <IconButton color="inherit" onClick={toggleDrawer}>
+                            <IconButton onClick={toggleMemberDrawer} color="inherit">
+                                <GroupOutlined />
+                            </IconButton>
+
+                            {/* Member Drawer */}
+                            <Drawer
+                                anchor="right"
+                                open={openMemberDrawer}
+                                onClose={toggleMemberDrawer}
+                                PaperProps={{
+                                    sx: {
+                                        "& .MuiListItemText-primary": { color: "black" },
+                                        "& .MuiListItemText-secondary": { color: "black" },
+                                        "& .MuiListItemIcon-root": { color: "black" },
+                                        backgroundColor: "#fff",
+                                        color: "#000",
+                                        width: "300px",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center",
+                                        padding: "16px",
+                                    },
+                                }} >
+                                <Box sx={{ textAlign: "center", width: "100%", color: "#000", pt: 10 }}>
+                                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                        <Typography variant="h6" fontWeight="bold" gutterBottom> Members </Typography>
+
+                                        <Add sx={{ cursor: "pointer" }} />
+                                    </Box>
+
+                                    <div className="Search mt-4">
+                                        <div>
+                                            <div className="relative">
+                                                <input className="ps-10 py-2 w-full rounded-md border border-gray" placeholder="Search Members" name="search" margin="normal" variant="outlined" label="Search Members" type="text" />
+                                                <label htmlFor="email"> Search </label>
+                                                <SearchOutlined sx={{ color: "gray", mr: 1, position: "absolute", top: "50%", left: "10px", transform: "translateY(-50%)" }} />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* <List sx={{ width: "100%" }}>
+                                        {notifications.length > 0 ? (
+                                            notifications.map((notification, index) => (
+                                                <ListItem key={index} divider sx={{ textAlign: "center" }}>
+                                                    <ListItemText primary={<Typography component="span">{notification}</Typography>} />
+                                                </ListItem>
+                                            ))
+                                        ) : (
+                                            <Typography fontWeight="bold" variant='h6' color="primary">( No new notifications )</Typography>
+                                        )}
+                                    </List> */}
+                                </Box>
+                            </Drawer>
+
+                            <IconButton color="inherit" onClick={toggleNotificationDrawer}>
                                 <Badge badgeContent={notifications.length} color="error">
                                     <NotificationsOutlinedIcon />
                                 </Badge>
                             </IconButton>
-
                             {/* Notification Drawer */}
                             <Drawer
                                 anchor="right"
-                                open={openDrawer}
-                                onClose={toggleDrawer}
+                                open={openNotificationDrawer}
+                                onClose={toggleNotificationDrawer}
                                 PaperProps={{
                                     sx: {
                                         "& .MuiListItemText-primary": { color: "white" },
@@ -258,19 +238,53 @@ export default function Navbar({ open, handleDrawerOpen, setMode }) {
                                 </Box>
                             </Drawer>
 
-                            <IconButton color="inherit" aria-label="add to shopping cart">
-                                <SettingsOutlinedIcon />
+                            <IconButton onClick={(e) => { handleOpen(e) }} size="small">
+                                <Avatar src="../../../public/Me.jpg" sx={{ width: 32, height: 32, border: "2px solid gray" }} />
                             </IconButton>
 
-                            <IconButton onClick={handleProfileMenuOpen} color="inherit" aria-label="delete">
-                                <Person2OutlinedIcon />
-                            </IconButton>
+                            <Menu
+                                anchorEl={anchorEl}
+                                open={oopen}
+                                onClose={handleClose}
+                                PaperProps={{
+                                    elevation: 5,
+                                    sx: {
+                                        width: 320,
+                                        mt: 1.5,
+                                        overflow: "visible",
+                                        borderRadius: 3,
+                                        p: 2,
+                                        backgroundColor: "white",
+                                        color: "black",
+                                    },
+                                }}
+                                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                                anchorOrigin={{ horizontal: "right", vertical: "bottom" }} >
+
+                                <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
+                                    <Avatar src="../../../public/Me.jpg" sx={{ width: 56, height: 56, mb: 1 }} />
+                                    <Typography variant="h6" fontWeight="bold"> Hi, {userInfo.username?.split(" ")[0]}! </Typography>
+                                    <Typography variant="body2" color="text.secondary"> {userInfo.email} </Typography>
+                                </Box>
+
+                                <Stack sx={{ width: "100%", alignItems: "center", justifyContent: "between" }} direction="row" spacing={1} my={3}>
+                                    <Button onClick={() => pushToProfile()} sx={{
+                                        py: 0.5, color: "black", textTransform: "capitalize", width: "100%", borderColor: "gray", whiteSpace: 'nowrap', '&:hover': { backgroundColor: 'gray', color: 'white' }
+                                    }} variant="outlined" size="small" startIcon={<SettingsIcon sx={{ fontSize: 16 }} />}>
+                                        Manage account
+                                    </Button>
+
+                                    <Button onClick={handleLogout} sx={{
+                                        py: 0.5, color: "black", textTransform: "capitalize", width: "100%", borderColor: "gray", whiteSpace: 'nowrap', '&:hover': { backgroundColor: 'gray', color: 'white' }
+                                    }} variant="outlined" size="small" startIcon={<LogoutIcon sx={{ fontSize: 16 }} />}>
+                                        Sign out
+                                    </Button>
+                                </Stack>
+                                <Divider />
+                            </Menu>
                         </Stack>
                     </Toolbar>
                 </AppBar>
-
-                {renderMobileMenu}
-                {renderMenu}
             </Box>
         </>
     );
